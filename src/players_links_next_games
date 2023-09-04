@@ -1,0 +1,22 @@
+from playwright.sync_api import sync_playwright
+
+# URL da página da equipe que você deseja analisar
+url = 'https://www.hltv.org/team/7532/big'
+
+with sync_playwright() as p:
+    browser = p.chromium.launch(headless = False)
+    page = browser.new_page()
+    page.goto(url)
+    
+    # Encontre todos os elementos <a> com a classe "col-custom"
+    player_links = page.query_selector_all('.col-custom')
+    
+    # Itere pelos elementos e extraia os nomes dos jogadores e os links de perfil
+    for player_link in player_links:
+        player_name = player_link.get_attribute('title')
+        player_profile_link = player_link.get_attribute('href')
+        
+        print("Nome do jogador:", player_name)
+        print("Link do perfil:", player_profile_link)
+    
+    browser.close()
